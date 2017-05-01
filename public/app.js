@@ -17,6 +17,9 @@ chatApp.config(function($stateProvider, $urlRouterProvider) {
     .factory('chatSocket', function(socketFactory) {
         return socketFactory();
     })
-    .controller('chatController', function(chatSocket) {
-        console.log("ssss")
+    .controller('chatController', function($scope, chatSocket) {
+        $scope.messages = []
+        chatSocket.on('message', function(data) {
+            $scope.messages.push(data.message)
+        })
     })

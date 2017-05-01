@@ -20,7 +20,17 @@ mongoose.connect(db.url, function() {
 
 io.on('connect', function(socket) {
     console.log("Hello world")
+    socket.on('disconnect', function() {
+        console.log('Disconnected')
+    })
+
 })
+
+
+app.use(function(req, res, next) {
+    req.io = io;
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
