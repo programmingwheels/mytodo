@@ -4,15 +4,22 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var db= require('./config/db')
+var db = require('./config/db')
 var mongoose = require('mongoose')
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
 var app = express();
+var server = require('http').Server(app)
+var io = require('socket.io')(server)
 
-mongoose.connect(db.url,function(){
+
+
+mongoose.connect(db.url, function() {
     console.log("Connected to database")
+})
+
+io.on('connect', function(socket) {
+    console.log("Hello world")
 })
 
 // view engine setup
@@ -28,6 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1', routes);
 app.use('/', users);
+
+app.get('*', function(req, res) {
+    res.sendFile('index.html')
+})
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -61,4 +72,5 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+
+module.exports = { app: app, server: server };
